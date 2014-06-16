@@ -21,6 +21,7 @@ find_package (CUDA REQUIRED)
 if(MSVC)
     find_package (MKL REQUIRED)
     find_package (Threads REQUIRED)
+    find_package (MATLAB REQUIRED)
 else()
     find_package (BLAS REQUIRED)
     find_path(BLAS_INCLUDE_DIRS cblas.h)
@@ -94,6 +95,7 @@ include_directories (
   ${NUMPY_INCLUDE_DIRS}/numpy
   ${MKL_INCLUDE_DIR}
   ${THREADS_PTHREADS_INCLUDE_DIR}
+  ${MATLAB_INCLUDE_DIR}
   include/common
   include/nvmatrix
   include/cudaconv2
@@ -106,6 +108,7 @@ include_directories (
   ${CUDA_COMMON_INCLUDE_DIRS}
   ${PYTHON_INCLUDE_DIRS}
   ${NUMPY_INCLUDE_DIRS}/numpy
+  ${MATLAB_INCLUDE_DIR}
   include/common
   include/nvmatrix
   include/cudaconv2
@@ -130,11 +133,30 @@ CUDA_ADD_LIBRARY (convnet SHARED
   src/worker.cu
 )
 
+CUDA_ADD_LIBRARY (matconvnet SHARED
+  src/convnet.cu
+  src/cost.cu
+  src/data.cu
+  src/layer.cu
+  src/layer_kernels.cu
+  src/neuron.cu
+  src/util.cu
+  src/weights.cu
+  src/worker.cu
+  src/matconvnet.cu
+  src/Matlabdef.def
+)
+
 if(MSVC)
 set_target_properties (convnet
   PROPERTIES
   PREFIX ""
   SUFFIX "_.pyd"
+)
+set_target_properties (matconvnet
+  PROPERTIES
+  PREFIX ""
+  SUFFIX ".mexw64"
 )
 else()
 set_target_properties (convnet
@@ -154,6 +176,16 @@ if(MSVC)
   ${CUDA_CUBLAS_LIBRARIES}
   ${MKL_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
+)
+TARGET_LINK_LIBRARIES (matconvnet
+  common
+  nvmatrix
+  cudaconv2
+  ${PYTHON_LIBRARIES}
+  ${CUDA_CUBLAS_LIBRARIES}
+  ${MKL_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT}
+  ${MATLAB_LIBRARIES}
 )
 else()
   TARGET_LINK_LIBRARIES (convnet

@@ -41,7 +41,7 @@
 #include <curand_kernel.h>
 #include <pthread.h>
 #include <helper_image.h>
-#include <matrix.h>
+#include <ak_matrix.h>
 #include "nvmatrix_kernels.cuh"
 #include "nvmatrix_operators.cuh"
 

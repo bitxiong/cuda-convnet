@@ -24,7 +24,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <matrix.h>
+#include <ak_matrix.h>
 #include <matrix_funcs.h>
 
 #if defined(_WIN64) || defined(_WIN32)
